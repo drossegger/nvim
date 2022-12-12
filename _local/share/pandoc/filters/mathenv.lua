@@ -1,1 +1,1 @@
-/home/dino/workspace_nosync/pandocfilters/mathenv.lua
+/home/dino/workspace_nosync/pandoc_filters/mathenv.lua

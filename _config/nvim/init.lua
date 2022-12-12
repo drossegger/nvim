@@ -94,6 +94,12 @@ packer.startup(function()
   -- For vsnip users.
   use 'hrsh7th/cmp-vsnip'
   use 'hrsh7th/vim-vsnip'
+
+  -- Todo
+  use { 
+    'arnarg/todotxt.nvim',
+    requires={'MunifTanjim/nui.nvim'},
+  }
 end 
 )
 
@@ -202,3 +208,6 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"},{
   pattern = {"*.md"},
   callback = create_keymaps,})
 
+require('todotxt-nvim').setup({
+    todo_file='/home/dino/Documents/todo.txt',
+  })
