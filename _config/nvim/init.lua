@@ -1,5 +1,4 @@
--- Runtime path setup
-package.path=package.path .. ';/home/dino/.config/nvim/?.lua'
+-- Runtime path setup package.path=package.path .. ';/home/dino/.config/nvim/?.lua'
 --
 vim.o.filetype='on'
 vim.o.syntax='on'
@@ -25,7 +24,7 @@ vim.o.swapfile=false
 vim.g.mapleader=' '
 vim.g.maplocalleader="'"
 vim.g.tw=80
-
+vim.o.splitright=true
 local key_mapper = function(mode, key, result)
   vim.api.nvim_set_keymap(
     mode,
@@ -95,11 +94,8 @@ packer.startup(function()
   use 'hrsh7th/cmp-vsnip'
   use 'hrsh7th/vim-vsnip'
 
-  -- Todo
-  use { 
-    'arnarg/todotxt.nvim',
-    requires={'MunifTanjim/nui.nvim'},
-  }
+  use 'vim-scripts/todo-txt.vim'
+
 end 
 )
 
@@ -208,6 +204,4 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"},{
   pattern = {"*.md"},
   callback = create_keymaps,})
 
-require('todotxt-nvim').setup({
-    todo_file='/home/dino/Documents/todo.txt',
-  })
+vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Documents/todo/todo.txt',{})
