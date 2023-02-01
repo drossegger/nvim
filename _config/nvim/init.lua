@@ -16,10 +16,11 @@ vim.o.tabstop = 2
 vim.o.softtabstop = 2
 vim.o.shiftwidth = 2
 vim.o.expandtab = true
+vim.o.tw=80
 vim.wo.number = true
-vim.wo.relativenumber = false 
+vim.wo.relativenumber = false
 vim.wo.signcolumn = 'yes'
-vim.wo.wrap = true 
+-- vim.wo.wrap = true
 vim.o.swapfile=false
 vim.g.mapleader=' '
 vim.g.maplocalleader="'"
@@ -70,11 +71,14 @@ packer.startup(function()
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
   use 'sheerun/vim-polyglot'
 
+  use 'nvim-tree/nvim-web-devicons'
   -- theme
-  use 'tjdevries/colorbuddy.nvim'
-  use 'bkegley/gloombuddy'
+  --use 'tjdevries/colorbuddy.nvim'
+  --use 'bkegley/gloombuddy'
+  use "ellisonleao/gruvbox.nvim"
+  vim.o.background = 'dark'
+  vim.cmd([[colorscheme gruvbox]])
 
-  
   -- sneaking some formatting in here too
   use {'prettier/vim-prettier', run = 'yarn install' }
 
@@ -96,10 +100,14 @@ packer.startup(function()
 
   use 'vim-scripts/todo-txt.vim'
 
-end 
+  -- statusline
+  --use 'feline-nvim/feline.nvim'
+  use 'vim-airline/vim-airline'
+  use 'vim-airline/vim-airline-themes'
+
+end
 )
 
-vim.g.colors_name = 'gloombuddy'
 
 -- Plugin config
 vim.g.vim_markdown_math = 1
@@ -107,6 +115,7 @@ vim.g.tex_flavor='latex'
 vim.g.vimtex_view_method='zathura'
 vim.g.vimtex_compiler_engine='lualatex'
 vim.g.vimtex_compiler_progname='nvr'
+vim.g.airline_powerline_fonts=1
 -- Completion setup
 --
 vim.opt.completeopt={'menu','menuone','noselect'}
@@ -197,7 +206,7 @@ key_mapper('n','<Leader>t',':NERDTreeToggle<CR>')
 key_mapper('n','<Leader>f',':NERDTreeFind<CR>')
 
 -- Include COC config
---require 'include.coc' 
+--require 'include.coc'
 
 require('markdown')
 vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"},{
@@ -205,3 +214,7 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"},{
   callback = create_keymaps,})
 
 vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Documents/todo/todo.txt',{})
+
+
+-- Statusbar
+--require('feline_config')
