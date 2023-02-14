@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# v0.1.0
+
+action=$1
+flag=$2
+shift
+editor='nvim'
+
+[ "$action" = "usage" ] && {
+  echo ""
+  echo "    open | o "
+  echo "      Show todo.txt in favorite editor"
+  echo ""
+  exit
+}
+[ "$action" = "open" ] && {
+  $editor $TODO_FILE
+}
