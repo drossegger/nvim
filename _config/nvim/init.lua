@@ -213,7 +213,7 @@ vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"},{
   pattern = {"*.md"},
   callback = create_keymaps,})
 
-vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Documents/todo/todo.txt',{})
+vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Dropbox/Dokumente/todo/todo.txt',{})
 
 
 -- Statusbar
