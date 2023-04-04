@@ -217,7 +217,7 @@ key_mapper('n','<Leader>f',':NERDTreeFind<CR>')
 --   pattern = {"*.md"},
 --   callback = create_keymaps,})
 
-vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Documents/todo/todo.txt',{})
+vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Dropbox/Dokumente/todo/todo.txt',{})
 
 vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
 
