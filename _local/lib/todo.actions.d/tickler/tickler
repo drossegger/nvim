@@ -1,0 +1,46 @@
+#!/bin/bash
+
+action=$1 
+flag=$2
+shift
+[ "$action" = "usage" ] && { 
+  echo ""
+  echo "    tickler "
+  echo "      Convert tickles from tickler.txt to tasks in todo.txt"
+  echo ""
+  exit
+}
+[ $action = "tickler" ] && {
+  today=$(date +%s)
+  tomorrow=$(date -d "tomorrow" +%s)
+  if [[ $1 == "tickle" ]]; then
+    while read -r task
+      do 
+        if [[ ${task:0:3} == "(F)" ]]; then
+          echo "$task"
+        fi
+      done < "$TICKLER_FILE"
+  else
+    echo "Adding the following tasks to Todo.txt"
+    echo "-------------------------------------------------"
+    count=0
+    while read -r task 
+     do
+      if [[ $task =~ .*start:.* ]]; then
+        taskdate=$(echo "$task" | sed -n "s/^.*start:\([0-9\-]*\).*/\1/p")
+        mtaskdate=$(date -d "$taskdate" +%s)
+        if (( "$tomorrow" >= "$mtaskdate" )); then
+          cleanedtask=$(echo "$task" | sed -n "s/\(^.*\)start:[0-9\-]\{10\}\(.*\)$/\1\2/p")
+          echo $cleanedtask
+          count+=1
+          echo $cleanedtask >> $TODO_FILE
+          echo $task >> "$TICKLER_FILE.archive"
+          sed -i "/$task/d" $TICKLER_FILE
+        fi 
+  
+      fi
+    done < "$TICKLER_FILE"
+    echo "-------------------------------------------------"
+    echo "Added $count new tasks to Todo.txt"
+  fi
+}

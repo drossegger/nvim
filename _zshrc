@@ -3,7 +3,7 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH="/home/dino/.oh-my-zsh"
-
+export TERM=xterm-256color
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -107,3 +107,4 @@ smartresize() {
 
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
 export TEXMFHOME=~/.texmf
+export ZoteroSQLpath=/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite

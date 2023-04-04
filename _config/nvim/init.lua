@@ -25,6 +25,8 @@ vim.o.swapfile=false
 vim.g.mapleader=' '
 vim.g.maplocalleader="'"
 vim.g.tw=80
+vim.g.loaded_perl_provider=0
+vim.g.loaded_ruby_provider=0
 vim.o.splitright=true
 local key_mapper = function(mode, key, result)
   vim.api.nvim_set_keymap(
@@ -104,6 +106,8 @@ packer.startup(function()
   --use 'feline-nvim/feline.nvim'
   use 'vim-airline/vim-airline'
   use 'vim-airline/vim-airline-themes'
+
+  use 'jalvesaq/zotcite'
 
 end
 )
@@ -208,13 +212,14 @@ key_mapper('n','<Leader>f',':NERDTreeFind<CR>')
 -- Include COC config
 --require 'include.coc'
 
-require('markdown')
-vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"},{
-  pattern = {"*.md"},
-  callback = create_keymaps,})
+-- require('markdown')
+-- vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"},{
+--   pattern = {"*.md"},
+--   callback = create_keymaps,})
 
 vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Documents/todo/todo.txt',{})
 
+vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
 
 -- Statusbar
 --require('feline_config')
