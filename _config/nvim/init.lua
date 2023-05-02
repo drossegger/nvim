@@ -73,7 +73,6 @@ packer.startup(function()
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
   use 'sheerun/vim-polyglot'
 
-  use 'nvim-tree/nvim-web-devicons'
   -- theme
   --use 'tjdevries/colorbuddy.nvim'
   --use 'bkegley/gloombuddy'
@@ -87,6 +86,7 @@ packer.startup(function()
 
   use 'preservim/nerdtree'
   use 'ryanoasis/vim-devicons'
+  use 'nvim-tree/nvim-web-devicons'
   --use {'neoclide/coc.nvim', branch='release'}
 
   use 'neovim/nvim-lspconfig'
@@ -97,8 +97,8 @@ packer.startup(function()
   use 'hrsh7th/nvim-cmp'
 
   -- For vsnip users.
-  use 'hrsh7th/cmp-vsnip'
-  use 'hrsh7th/vim-vsnip'
+  -- use 'hrsh7th/cmp-vsnip'
+  -- use 'hrsh7th/vim-vsnip'
 
   use 'vim-scripts/todo-txt.vim'
 
@@ -109,17 +109,44 @@ packer.startup(function()
 
   use 'jalvesaq/zotcite'
 
+  -- snippets
+  use 'L3MON4D3/LuaSnip'
 end
 )
 
 
 -- Plugin config
 vim.g.vim_markdown_math = 1
-vim.g.tex_flavor='latex'
+-- vim.g.tex_flavor='latex'
+vim.g.vimtex_quickfix_mode=0
 vim.g.vimtex_view_method='zathura'
 vim.g.vimtex_compiler_engine='lualatex'
 vim.g.vimtex_compiler_progname='nvr'
 vim.g.airline_powerline_fonts=1
+
+-- LuaSnip
+--
+vim.cmd[[
+" Use Tab to expand and jump through snippets
+imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
+smap <silent><expr> <Tab> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Tab>'
+
+" Use Shift-Tab to jump backwards through snippets
+imap <silent><expr> <S-Tab> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<S-Tab>'
+smap <silent><expr> <S-Tab> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<S-Tab>'
+]]
+require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/LuaSnip/"})
+require("luasnip").config.set_config({ -- Setting LuaSnip config
+
+  -- Enable autotriggered snippets
+  enable_autosnippets = true,
+
+  -- Use Tab (or some other key if you prefer) to trigger visual selection
+  store_selection_keys = "<Tab>",
+  update_events='TextChanged,TextChangedI',
+})
+
+
 -- Completion setup
 --
 vim.opt.completeopt={'menu','menuone','noselect'}
