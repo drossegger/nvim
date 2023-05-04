@@ -33,7 +33,7 @@ local populate_authors = function(args, parent)
   return authors 
 end
   
-return {
+local snippets = {
   s({trig="question", snippetType="autosnippet"},
     fmta(
       [[
@@ -138,7 +138,42 @@ return {
       ),
       {condition=is_first_line}
       ),
-
+      s({ trig="cbgreen" },
+        fmta( 
+          [[ 
+            \colorbox{cyan}{<>}
+          ]],
+          { i(1) })
+      ),
+    s({trig="proof",snippetType="autosnippet" },
+      fmta(
+        [[
+        \begin{proof}
+        <>
+        \end{proof}
+        ]],
+        {
+          i(0)
+        }),
+      { condition= line_begin }
+      ),
+    s({ trig="wlog", snippetType="autosnippet" },
+      { t("without loss of generality"), }
+      ),
 }
 
+local mathhighlight = { [ "mf" ]="mathfrak", [ "mbf" ]="mathbf", [ "mbb" ]="mathbb" }
+for short,long in pairs(mathhighlight) do 
+  table.insert(snippets,
+    s({ trig=short , snippetType="autosnippet" },
+      {
+        t("\\"..long.."{"),
+        i(1),
+        t("}")
+      },
+      { condition=in_mathzone }
+      ))
+end
 
+
+return snippets
