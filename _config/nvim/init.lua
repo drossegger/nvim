@@ -76,10 +76,10 @@ packer.startup(function()
   -- theme
   --use 'tjdevries/colorbuddy.nvim'
   --use 'bkegley/gloombuddy'
-  use "ellisonleao/gruvbox.nvim"
-  vim.o.background = 'dark'
-  vim.cmd([[colorscheme gruvbox]])
-
+  --use "ellisonleao/gruvbox.nvim"
+  --vim.o.background = 'dark'
+  --vim.cmd([[colorscheme gruvbox]])
+  use 'shaunsingh/nord.nvim'
   -- sneaking some formatting in here too
   use {'prettier/vim-prettier', run = 'yarn install' }
 
@@ -90,11 +90,14 @@ packer.startup(function()
   --use {'neoclide/coc.nvim', branch='release'}
 
   use 'neovim/nvim-lspconfig'
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
   use 'hrsh7th/nvim-cmp'
+  use 'hrsh7th/cmp-omni'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-nvim-lua'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-emoji'
+  use 'onsails/lspkind-nvim'
 
   -- For vsnip users.
   -- use 'hrsh7th/cmp-vsnip'
@@ -102,11 +105,13 @@ packer.startup(function()
 
   use 'vim-scripts/todo-txt.vim'
 
+  use 'jdhao/better-escape.vim'
   -- statusline
   --use 'feline-nvim/feline.nvim'
-  use 'vim-airline/vim-airline'
-  use 'vim-airline/vim-airline-themes'
-
+  -- use 'vim-airline/vim-airline'
+  --use 'vim-airline/vim-airline-themes'
+  use { 'nvim-lualine/lualine.nvim', requires = { 'nvim-tree/nvim-web-devicons', opt=true } }
+  use { 'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons' }
   use 'jalvesaq/zotcite'
 
   -- snippets
@@ -114,7 +119,10 @@ packer.startup(function()
 end
 )
 
-
+-- Color Scheme
+  vim.g.nord_contrast = true
+  vim.g.nord_border= true
+  require('nord').set()
 -- Plugin config
 vim.g.vim_markdown_math = 1
 -- vim.g.tex_flavor='latex'
@@ -122,8 +130,9 @@ vim.g.vimtex_quickfix_mode=0
 vim.g.vimtex_view_method='zathura'
 vim.g.vimtex_compiler_engine='lualatex'
 vim.g.vimtex_compiler_progname='nvr'
-vim.g.airline_powerline_fonts=1
+require('lualine').setup()
 
+require("bufferline").setup{ options= { separator_style="slant" } }
 -- LuaSnip
 --
 vim.cmd[[
@@ -153,70 +162,75 @@ vim.opt.completeopt={'menu','menuone','noselect'}
 
 -- Set up nvim-cmp.
   local cmp = require'cmp'
+  local lspkind=require'lspkind'
 
   cmp.setup({
     snippet = {
-      -- REQUIRED - you must specify a snippet engine
       expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
       end,
     },
     window = {
-      -- completion = cmp.config.window.bordered(),
-      -- documentation = cmp.config.window.bordered(),
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
     },
-    mapping = cmp.mapping.preset.insert({
-      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    mapping = {
+      ['<Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        else
+         fallback()
+        end
+      end,
+      ['<S-Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end,
+      ['<Esc>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.abort(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    }),
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-      -- { name = 'luasnip' }, -- For luasnip users.
-      -- { name = 'ultisnips' }, -- For ultisnips users.
-      -- { name = 'snippy' }, -- For snippy users.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Set configuration for specific filetype.
-  cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources({
-      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
-    }, {
-      { name = 'buffer' },
-    })
-  })
-
-  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
+    },
     sources = {
-      { name = 'buffer' }
-    }
-  })
-
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    })
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' }, -- For luasnip users.
+      { name = 'nvim_lua' }, 
+      { name = 'path' }, 
+ --     { name = 'omni' },
+      { name = 'buffer' },
+      { name = 'emoji', insert = true, },
+    }, 
+    completion = {
+      keyword_length = 1,
+      completeopt = "menu,noselect"
+    },
+    view = {
+      entries = 'custom',
+    },
+    formatting = {
+      format = lspkind.cmp_format({
+        mode = "symbol_text",
+        menu = ({
+          nvim_lsp = "[LSP]",
+          ultisnips = "[US]",
+          nvim_lua = "[Lua]",
+          path = "[Path]",
+          buffer = "[Buffer]",
+          emoji = "[Emoji]",
+--  	      omni = "[Omni]",
+        }),
+      }),
+    },
   })
 
   -- Set up lspconfig.
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  --local capabilities = require('cmp_nvim_lsp').default_capabilities()
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  require('lspconfig')['ltex'].setup {
+  require('lspconfig')['texlab'].setup {
     capabilities = capabilities
   }
 ---- LSP
