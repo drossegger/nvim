@@ -1,5 +1,6 @@
 -- Runtime path setup package.path=package.path .. ';/home/dino/.config/nvim/?.lua'
 --
+vim.o.linebreak=true
 vim.o.filetype='on'
 vim.o.syntax='on'
 vim.o.errorbells=false
@@ -130,7 +131,75 @@ vim.g.vimtex_quickfix_mode=0
 vim.g.vimtex_view_method='zathura'
 vim.g.vimtex_compiler_engine='lualatex'
 vim.g.vimtex_compiler_progname='nvr'
-require('lualine').setup()
+
+local function texstatus()
+  local running=vim.b.vimtex.compiler.status
+  --local running=vim.b.vimtex.compiler.is_running()
+  if running==1 then
+    return [[c]]
+  elseif running==2 then
+    return [[✓]]
+  elseif running==3 then
+    return [[✗]]
+  else 
+    return [[i]]
+  end
+end
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
+  },
+  sections = {
+    lualine_a = {'mode',
+                {
+                  texstatus, 
+                  cond = function() return (vim.bo.filetype=='tex') end,
+                  --color= function(section)
+                  --  if vim.b.vimtex ~= nil then
+                  --    if texstatus()==3 then
+                  --      return { bg="#bf616a" }
+                  --    elseif texstatus()==2 then
+                  --      return { bg="#a3be8c" }
+                  --    end
+                  --  else 
+                  --    return { bg="grey" }
+                  --  end
+                  --end
+                },
+                },
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location' }
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+}
 
 require("bufferline").setup{ options= { separator_style="slant" } }
 -- LuaSnip
@@ -175,22 +244,22 @@ vim.opt.completeopt={'menu','menuone','noselect'}
       documentation = cmp.config.window.bordered(),
     },
     mapping = {
-      ['<Tab>'] = function(fallback)
+      ['<C-j>'] = function(fallback)
         if cmp.visible() then
           cmp.select_next_item()
         else
          fallback()
         end
       end,
-      ['<S-Tab>'] = function(fallback)
+      ['<C-k>'] = function(fallback)
         if cmp.visible() then
           cmp.select_prev_item()
         else
           fallback()
         end
       end,
-      ['<Esc>'] = cmp.mapping.close(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<C-CR>'] = cmp.mapping.confirm({ select = true }),
       ['<C-d>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
@@ -228,8 +297,6 @@ vim.opt.completeopt={'menu','menuone','noselect'}
   })
 
   -- Set up lspconfig.
-  --local capabilities = require('cmp_nvim_lsp').default_capabilities()
-  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
   require('lspconfig')['texlab'].setup {
     capabilities = capabilities
   }
@@ -249,6 +316,8 @@ vim.opt.completeopt={'menu','menuone','noselect'}
 -- key_mapper('n','<Leader>n',':NERDTree<CR>')
 key_mapper('n','<Leader>t',':NERDTreeToggle<CR>')
 key_mapper('n','<Leader>f',':NERDTreeFind<CR>')
+key_mapper('n',']b',':BufferLineCycleNext<CR>')
+key_mapper('n','b]',':BufferLineCyclePrev<CR>')
 
 -- Include COC config
 --require 'include.coc'
@@ -264,3 +333,18 @@ vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
 
 -- Statusbar
 --require('feline_config')
+
+-- Treesitter
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+  indent = {
+    enable = true
+  }
+}

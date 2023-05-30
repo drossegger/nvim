@@ -1,27 +1,9 @@
-local line_begin = require("luasnip.extras.expand_conditions").line_begin
--- Summary: When `SELECT_RAW` is populated with a visual selection, the function
--- returns an insert node whose initial text is set to the visual selection.
--- When `SELECT_RAW` is empty, the function simply returns an empty insert node.
+local helpers = require('luasnip-helper-functions')
+local get_visual=helpers.get_visual
+local in_mathzone=helpers.tex_utils.in_mathzone
+local is_first_line=helpers.is_first_line
+local line_begin=require("luasnip.extras.expand_conditions").line_begin
 
-local get_visual = function(args, parent)
-  if (#parent.snippet.env.SELECT_RAW > 0) then
-    return sn(nil, i(1, parent.snippet.env.SELECT_RAW))
-  else  -- If SELECT_RAW is empty, return a blank insert node
-    return sn(nil, i(1))
-  end
-end
-local in_mathzone = function()
-  -- The `in_mathzone` function requires the VimTeX plugin
-  return vim.fn['vimtex#syntax#in_mathzone']() == 1
-end
-local is_first_line =function()
-  local line_number = vim.fn['line']('.')
-  if (line_number == 1) then
-    return true
-  else
-    return false
-  end
-end
 local populate_authors = function(args, parent)
   local authors = {} 
   -- if args[0] == nil then
@@ -60,6 +42,19 @@ local snippets = {
         i(2),
         i(0),
         rep(1),
+      }
+      )
+    ),
+    s({trig="enum",snippetType="autosnippet"},
+    fmta(
+      [[
+      \begin{enumerate}
+        \tightlist
+        \item <>
+      \end{enumerate}
+      ]],
+      {
+        i(0),
       }
       )
     ),
@@ -162,7 +157,7 @@ local snippets = {
       ),
 }
 
-local mathhighlight = { [ "mf" ]="mathfrak", [ "mbf" ]="mathbf", [ "mbb" ]="mathbb" }
+local mathhighlight = { [ "mf" ]="mathfrak", [ "mbf" ]="mathbf", [ "mbb" ]="mathbb", [ "un" ] = "underline", [ "ov" ] = "overline" }
 for short,long in pairs(mathhighlight) do 
   table.insert(snippets,
     s({ trig=short , snippetType="autosnippet" },
