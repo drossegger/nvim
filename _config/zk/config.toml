@@ -1,2 +1,5 @@
 [tool] 
-editor = 'nvim'
+editor = "nvim"
+
+[note]
+filename = "{{id}}-{{slug title}}"

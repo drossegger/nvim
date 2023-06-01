@@ -110,3 +110,5 @@ export TEXMFHOME=~/.texmf
 export ZoteroSQLpath=/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite
 
 export ZK_NOTEBOOK_DIR=/home/dino/notebook/
+export DENO_INSTALL="/home/$USER/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"

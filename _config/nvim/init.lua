@@ -1,7 +1,6 @@
 -- Runtime path setup package.path=package.path .. ';/home/dino/.config/nvim/?.lua'
 --
-vim.o.linebreak=true
-vim.o.filetype='on'
+vim.o.linebreak=true vim.o.filetype='on'
 vim.o.syntax='on'
 vim.o.errorbells=false
 vim.o.smartcase=true
@@ -124,6 +123,13 @@ packer.startup(function()
   }
 
   use("mickael-menu/zk-nvim")
+  use {
+    'iamcco/markdown-preview.nvim',
+    run = function() vim.fn['mkdp#util#install']() end,
+    ft = {'markdown'}
+  }
+
+
 end
 )
 
@@ -336,8 +342,8 @@ key_mapper('n','b]',':BufferLineCyclePrev<CR>')
 
 vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Dropbox/Dokumente/todo/todo.txt',{})
 
-vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
-
+--vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
+vim.env.ZoteroSQLpath="/home/dino/Zotero/zotero.sqlite"
 -- Statusbar
 --require('feline_config')
 
@@ -358,3 +364,4 @@ require'nvim-treesitter.configs'.setup {
 -- Zettelkasten
 
 require("zk").setup()
+vim.g.mkdp_filetypes={'markdown'}
