@@ -117,6 +117,13 @@ packer.startup(function()
 
   -- snippets
   use 'L3MON4D3/LuaSnip'
+  use {
+   'nvim-telescope/telescope.nvim', tag = '0.1.1',
+  -- or                            , branch = '0.1.x',
+   requires = { {'nvim-lua/plenary.nvim'} }
+  }
+
+  use("mickael-menu/zk-nvim")
 end
 )
 
@@ -259,7 +266,7 @@ vim.opt.completeopt={'menu','menuone','noselect'}
         end
       end,
       ['<C-e>'] = cmp.mapping.abort(),
-      ['<C-CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<C-l>'] = cmp.mapping.confirm({ select = true }),
       ['<C-d>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
@@ -348,3 +355,6 @@ require'nvim-treesitter.configs'.setup {
     enable = true
   }
 }
+-- Zettelkasten
+
+require("zk").setup()

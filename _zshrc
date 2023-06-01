@@ -108,3 +108,5 @@ smartresize() {
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
 export TEXMFHOME=~/.texmf
 export ZoteroSQLpath=/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite
+
+export ZK_NOTEBOOK_DIR=/home/dino/notebook/
