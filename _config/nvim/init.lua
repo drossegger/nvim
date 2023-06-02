@@ -45,7 +45,6 @@ key_mapper('', '<right>', '<nop>')
 -- Plugin Manager Packer
 --
 --
---
 local vim = vim
 local execute = vim.api.nvim_command
 local fn = vim.fn
@@ -61,6 +60,8 @@ local util = require'packer.util'
 packer.init({
   package_root = util.join_paths(vim.fn.stdpath('data'), 'site', 'pack')
 })
+
+
 --- startup and add configure plugins
 packer.startup(function()
   local use = use
@@ -68,8 +69,8 @@ packer.startup(function()
   -- use 'neovim/nvim-lspconfig'
   use 'lervag/vimtex'
   use 'tpope/vim-surround'
-  use 'vim-pandoc/vim-pandoc-syntax'
-  use 'vim-pandoc/vim-pandoc'
+  --use 'vim-pandoc/vim-pandoc-syntax'
+  --use 'vim-pandoc/vim-pandoc'
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
   use 'sheerun/vim-polyglot'
 
@@ -123,15 +124,18 @@ packer.startup(function()
   }
 
   use("mickael-menu/zk-nvim")
-  use {
-    'iamcco/markdown-preview.nvim',
-    run = function() vim.fn['mkdp#util#install']() end,
-    ft = {'markdown'}
-  }
-
-
-end
+  --use {
+  --  'iamcco/markdown-preview.nvim',
+  --  ft = 'markdown',
+  --  run = 'cd app && yarn install'
+  --}
+  use {'iamcco/markdown-preview.nvim'}
+  use {'junegunn/limelight.vim'}
+  use {'folke/twilight.nvim'}
+  use {'folke/zen-mode.nvim'}
+ end
 )
+
 
 -- Color Scheme
   vim.g.nord_contrast = true
@@ -342,8 +346,8 @@ key_mapper('n','b]',':BufferLineCyclePrev<CR>')
 
 vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Dropbox/Dokumente/todo/todo.txt',{})
 
---vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
-vim.env.ZoteroSQLpath="/home/dino/Zotero/zotero.sqlite"
+vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
+--vim.env.ZoteroSQLpath="/home/dino/Zotero/zotero.sqlite"
 -- Statusbar
 --require('feline_config')
 
@@ -364,4 +368,23 @@ require'nvim-treesitter.configs'.setup {
 -- Zettelkasten
 
 require("zk").setup()
-vim.g.mkdp_filetypes={'markdown'}
+
+-- Zen Mode
+--
+
+local zenoptions= {
+  plugins = {
+    alacritty = {
+     enabled = true,
+     font = '18' 
+   },
+  },
+  window = {
+    options = {
+      number = false
+    }
+  }
+}
+vim.keymap.set('n','<Leader>zen',function() require("zen-mode").toggle(
+zenoptions ) end )
+
