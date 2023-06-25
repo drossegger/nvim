@@ -25,30 +25,29 @@ function M.is_first_line()
 end
 
 
-
-local tex_utils = {}
-tex_utils.in_mathzone = function()  -- math context detection
+function M.tex_in_mathzone()
   return vim.fn['vimtex#syntax#in_mathzone']() == 1
 end
-tex_utils.in_text = function()
-  return not tex_utils.in_mathzone()
+
+function M.tex_in_text()
+  return not M.tex_in_mathzone()
 end
-tex_utils.in_comment = function()  -- comment detection
+function M.tex_in_comment()  -- comment detection
   return vim.fn['vimtex#syntax#in_comment']() == 1
 end
-tex_utils.in_env = function(name)  -- generic environment detection
+function M.tex_in_env(name)  -- generic environment detection
     local is_inside = vim.fn['vimtex#env#is_inside'](name)
     return (is_inside[1] > 0 and is_inside[2] > 0)
 end
 -- A few concrete environments---adapt as needed
-tex_utils.in_equation = function()  -- equation environment detection
-    return tex_utils.in_env('equation')
+function M.tex_in_equation()  -- equation environment detection
+    return M.tex_in_env('equation')
 end
-tex_utils.in_itemize = function()  -- itemize environment detection
-    return tex_utils.in_env('itemize')
+function M.tex_in_itemize()  -- itemize environment detection
+    return M.tex_in_env('itemize')
 end
-tex_utils.in_tikz = function()  -- TikZ picture environment detection
-    return tex_utils.in_env('tikzpicture')
+function M.tex_in_tikz()  -- TikZ picture environment detection
+    return M.tex_in_env('tikzpicture')
 end 
-M["tex_utils"]=tex_utils
+--M["tex_utils"]=tex_utils
 return M

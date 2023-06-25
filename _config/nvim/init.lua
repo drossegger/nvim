@@ -114,6 +114,7 @@ packer.startup(function()
   use { 'nvim-lualine/lualine.nvim', requires = { 'nvim-tree/nvim-web-devicons', opt=true } }
   use { 'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons' }
   use 'jalvesaq/zotcite'
+  use 'jalvesaq/cmp-zotcite'
 
   -- snippets
   use 'L3MON4D3/LuaSnip'
@@ -286,8 +287,9 @@ vim.opt.completeopt={'menu','menuone','noselect'}
       { name = 'luasnip' }, -- For luasnip users.
       { name = 'nvim_lua' }, 
       { name = 'path' }, 
- --     { name = 'omni' },
-      { name = 'buffer' },
+      { name = 'omni' },
+      --{ name = 'buffer' },
+      { name = 'cmp_zotcite'},
       { name = 'emoji', insert = true, },
     }, 
     completion = {
@@ -354,7 +356,7 @@ vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
 -- Treesitter
 require'nvim-treesitter.configs'.setup {
   highlight = {
-    enable = true,
+    enable = false,
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
     -- Using this option may slow down your editor, and you may see some duplicate highlights.

@@ -1,6 +1,6 @@
 local helpers = require('luasnip-helper-functions')
 local get_visual=helpers.get_visual
-local in_mathzone=helpers.tex_utils.in_mathzone
+local in_mathzone=helpers.tex_in_mathzone
 local is_first_line=helpers.is_first_line
 local line_begin=require("luasnip.extras.expand_conditions").line_begin
 
@@ -16,6 +16,26 @@ local populate_authors = function(args, parent)
 end
   
 local snippets = {
+  s({ trig="sec" },
+    fmta(
+      [[
+      \section{<>}\label{sec:<>}
+      ]],
+      { i(1),
+        i(2),
+      }),
+    { condition = line_begin }
+    ),
+  s({ trig="sub" },
+    fmta(
+      [[
+      \subsection{<>}\label{subsec:<>}
+      ]],
+      { i(1),
+        i(2),
+      }),
+    { condition= line_begin }
+    ),
   s({trig="question", snippetType="autosnippet"},
     fmta(
       [[
@@ -155,9 +175,10 @@ local snippets = {
     s({ trig="wlog", snippetType="autosnippet" },
       { t("without loss of generality"), }
       ),
+
 }
 
-local mathhighlight = { [ "mf" ]="mathfrak", [ "mbf" ]="mathbf", [ "mbb" ]="mathbb", [ "un" ] = "underline", [ "ov" ] = "overline" }
+local mathhighlight = { [ "mf" ]="mathfrak", [ "mbf" ]="mathbf", [ "mbb" ]="mathbb", [ "unl" ] = "underline", [ "ovl" ] = "overline" }
 for short,long in pairs(mathhighlight) do 
   table.insert(snippets,
     s({ trig=short , snippetType="autosnippet" },
@@ -166,7 +187,7 @@ for short,long in pairs(mathhighlight) do
         i(1),
         t("}")
       },
-      { condition=in_mathzone }
+      { condition = in_mathzone}
       ))
 end
 

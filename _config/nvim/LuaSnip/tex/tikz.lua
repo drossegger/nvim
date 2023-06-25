@@ -23,7 +23,7 @@ local snippets = {
         i(1,'params'),
       }
     ),
-    { condition = helpers.tex_utils.in_tikz }
+    { condition = helpers.tex_in_tikz }
   ),
   s({trig='dd', snippetType='autosnippet'},
     fmta(
@@ -34,7 +34,7 @@ local snippets = {
         i(1,'params'),
       }
     ),
-    { condition = helpers.tex_utils.in_tikz }
+    { condition = helpers.tex_in_tikz }
   ),
 }
 return snippets
