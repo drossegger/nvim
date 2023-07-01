@@ -63,7 +63,8 @@ local snippets = {
         i(0),
         rep(1),
       }
-      )
+      ),
+      {condition = line_begin }
     ),
     s({trig="enum",snippetType="autosnippet"},
     fmta(
@@ -76,7 +77,8 @@ local snippets = {
       {
         i(0),
       }
-      )
+      ),
+      { condition = line_begin }
     ),
   s({trig="emph"},
     fmta(

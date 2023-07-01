@@ -7,6 +7,7 @@ shift
   echo ""
   echo "    tickler "
   echo "      Convert tickles from tickler.txt to tasks in todo.txt"
+  echo "      Protip: create a conjob!"
   echo ""
   exit
 }
@@ -23,7 +24,7 @@ shift
   else
     echo "Adding the following tasks to Todo.txt"
     echo "-------------------------------------------------"
-    count=0
+    declare -i count
     while read -r task 
      do
       if [[ $task =~ .*start:.* ]]; then
@@ -35,7 +36,7 @@ shift
           count+=1
           echo $cleanedtask >> $TODO_FILE
           echo $task >> "$TICKLER_FILE.archive"
-          sed -i "/$task/d" $TICKLER_FILE
+          awk -i inplace -vtask="$task" '$0!=task {print}' $TICKLER_FILE 
         fi 
   
       fi
