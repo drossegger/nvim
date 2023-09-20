@@ -36,20 +36,6 @@ local snippets = {
       }),
     { condition= line_begin }
     ),
-  s({trig="question", snippetType="autosnippet"},
-    fmta(
-      [[
-      \begin{question}\label{ques:<>}
-        <>
-      \end{question}
-      ]],
-      {
-        i(1),
-        i(0),
-      }
-      ),
-    { condition = line_begin }
-    ),
   s({trig="env",snippetType="autosnippet"},
     fmta(
       [[
