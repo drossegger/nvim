@@ -52,7 +52,7 @@ local snippets = {
       ),
       {condition = line_begin }
     ),
-    s({trig="enum",snippetType="autosnippet"},
+    s({trig="enum"},
     fmta(
       [[
       \begin{enumerate}

@@ -134,7 +134,11 @@ packer.startup(function()
   use {'junegunn/limelight.vim'}
   use {'folke/twilight.nvim'}
   use {'folke/zen-mode.nvim'}
+
+  use{'tpope/vim-fugitive'}
+  use{'vigoux/LanguageTool.nvim'}
  end
+  
 )
 
 
@@ -390,3 +394,7 @@ local zenoptions= {
 vim.keymap.set('n','<Leader>zen',function() require("zen-mode").toggle(
 zenoptions ) end )
 
+-- LanguageTool
+--
+
+vim.g.languagetool_server_jar='/home/dino/apps/LanguageTool-6.3/languagetool-server.jar'
