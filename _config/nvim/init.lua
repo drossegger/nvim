@@ -41,6 +41,7 @@ key_mapper('', '<up>', '<nop>')
 key_mapper('', '<down>', '<nop>')
 key_mapper('', '<left>', '<nop>')
 key_mapper('', '<right>', '<nop>')
+key_mapper('i','<C-t>','<Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab>')
 
 -- Plugin Manager Packer
 --
@@ -137,6 +138,8 @@ packer.startup(function()
 
   use{'tpope/vim-fugitive'}
   use{'vigoux/LanguageTool.nvim'}
+  use{'ledger/vim-ledger'}
+  use{'machakann/vim-swap'}
  end
   
 )
@@ -352,7 +355,7 @@ key_mapper('n','b]',':BufferLineCyclePrev<CR>')
 
 vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Dropbox/Dokumente/todo/todo.txt',{})
 
-vim.env.ZoteroSQLpath="/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite"
+vim.env.ZoteroSQLpath="/home/dino/Zotero/zotero.sqlite"
 --vim.env.ZoteroSQLpath="/home/dino/Zotero/zotero.sqlite"
 -- Statusbar
 --require('feline_config')

@@ -180,4 +180,7 @@ for short,long in pairs(mathhighlight) do
 end
 
 
+table.insert(snippets,
+  s({trig="%^%-1",snippetType="autosnippet",regTrig=true,wordTrig=false},{t("^{-1}")}))
+
 return snippets
