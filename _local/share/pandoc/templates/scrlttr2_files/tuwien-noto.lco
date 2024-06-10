@@ -1,0 +1,20 @@
+\ProvidesFile{tuwien-noto.lco}
+
+\setkomavar{fromname}{Dino Rossegger}
+\setkomavar{fromaddress}{%
+	Institut für Diskrete Mathematik und Geometrie\\
+	Wiedner Hauptstraße 8-10/104/5
+  1040 Wien
+  Austria
+}
+\setkomavar{fromemail}{dino.rossegger@tuwien.ac.at}\KOMAoptions{fromemail=true}
+\setkomavar{backaddress}{}
+\setplength{backaddrheight}{0pt}
+\setplength{refvpos}{\useplength{toaddrvpos}}
+
+
+
+\setplength{sigbeforevskip}{3cm}
+\KOMAoptions{fromlogo=true}
+
+

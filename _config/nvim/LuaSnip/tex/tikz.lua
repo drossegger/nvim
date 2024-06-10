@@ -1,7 +1,7 @@
 local helpers = require('luasnip-helper-functions')
 
 local snippets = {
-  s({trig='tikz', snippetType='autosnippet'},
+  s({trig='tikz'},
     fmta(
       [[
       \begin{tikzpicture}
