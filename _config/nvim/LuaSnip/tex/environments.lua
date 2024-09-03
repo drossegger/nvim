@@ -114,15 +114,15 @@ local snippets = {
           \addbibresource{mybib.bib}
           %%AUTHOR Adresses, in alphabetic order
           
-          \address{Department of Mathematics, University of California, Berkeley {\normalfont and} Institute of Discrete Mathematics and Geometry, Technische Universit\"at Wien}
-          \email{dino@math.berkeley.edu}
+          \address{Institute of Discrete Mathematics and Geometry, Technische Universit\"at Wien}
+          \email{dino.rossegger@tuwien.ac.at}
           
           
           %%%
           %TODO: update funding information
           %TODO: UPDATE subjclass (03C57,03D45)
           \subjclass{}
-          \thanks{The work of Rossegger was supported by the European Union's Horizon 2020 Research and Innovation Programme under the Marie Sk\l{}odowska-Curie grant agreement No. 101026834 — ACOSE}
+          \thanks{}
           \begin{document}
           \maketitle
           %\begin{abstract}

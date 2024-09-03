@@ -170,6 +170,25 @@ local function texstatus()
     return [[i]]
   end
 end
+
+local function getWords()
+    -- the third string here is the string for visual-block mode (^V)
+    if vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == "" then
+        return vim.fn.wordcount().visual_words .. " w"
+    else
+        return vim.fn.wordcount().words .. " w"
+    end
+end
+local function getChars()
+    -- the third string here is the string for visual-block mode (^V)
+    if vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == "" then
+        return vim.fn.wordcount().visual_chars .. " c"
+    else
+        return vim.fn.wordcount().chars.. " c"
+    end
+end
+
+
 require('lualine').setup {
   options = {
     icons_enabled = true,
@@ -205,14 +224,14 @@ require('lualine').setup {
                   --    return { bg="grey" }
                   --  end
                   --end
-                },
+                }, 'searchcount'
                 },
     lualine_b = {'branch', 'diff', 'diagnostics'},
     lualine_c = {'filename'},
     lualine_x = {'encoding', 'fileformat', 'filetype'},
     lualine_y = {'progress'},
-    lualine_z = {'location' }
-  },
+    lualine_z = {'location', { getChars }, { getWords } }
+    },
   inactive_sections = {
     lualine_a = {},
     lualine_b = {},
