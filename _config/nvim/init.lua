@@ -1,6 +1,7 @@
 -- Runtime path setup package.path=package.path .. ';/home/dino/.config/nvim/?.lua'
 --
-vim.o.linebreak=true vim.o.filetype='on'
+vim.o.linebreak=true 
+vim.o.filetype='on'
 vim.o.syntax='on'
 vim.o.errorbells=false
 vim.o.smartcase=true
@@ -16,7 +17,7 @@ vim.o.tabstop = 2
 vim.o.softtabstop = 2
 vim.o.shiftwidth = 2
 vim.o.expandtab = true
-vim.o.tw=80
+vim.o.tw=0
 vim.wo.number = true
 vim.wo.relativenumber = false
 vim.wo.signcolumn = 'yes'
@@ -24,7 +25,6 @@ vim.wo.signcolumn = 'yes'
 vim.o.swapfile=false
 vim.g.mapleader=' '
 vim.g.maplocalleader="'"
-vim.g.tw=80
 vim.g.loaded_perl_provider=0
 vim.g.loaded_ruby_provider=0
 vim.o.splitright=true
@@ -49,101 +49,11 @@ key_mapper('i','<C-t>','<Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab>')
 local vim = vim
 local execute = vim.api.nvim_command
 local fn = vim.fn
--- ensure that packer is installed
-local install_path = fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
-if fn.empty(fn.glob(install_path)) > 0 then
-    execute('!git clone https://github.com/wbthomason/packer.nvim '..install_path)
-    execute 'packadd packer.nvim'
-end
-vim.cmd('packadd packer.nvim')
-local packer = require'packer'
-local util = require'packer.util'
-packer.init({
-  package_root = util.join_paths(vim.fn.stdpath('data'), 'site', 'pack')
-})
 
-
---- startup and add configure plugins
-packer.startup(function()
-  local use = use
-  -- add you plugins here like:
-  -- use 'neovim/nvim-lspconfig'
-  use 'lervag/vimtex'
-  use 'tpope/vim-surround'
-  --use 'vim-pandoc/vim-pandoc-syntax'
-  --use 'vim-pandoc/vim-pandoc'
-  use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
-  use 'sheerun/vim-polyglot'
-
-  -- theme
-  --use 'tjdevries/colorbuddy.nvim'
-  --use 'bkegley/gloombuddy'
-  --use "ellisonleao/gruvbox.nvim"
-  --vim.o.background = 'dark'
-  --vim.cmd([[colorscheme gruvbox]])
-  use 'shaunsingh/nord.nvim'
-  -- sneaking some formatting in here too
-  use {'prettier/vim-prettier', run = 'yarn install' }
-
-
-  use 'preservim/nerdtree'
-  use 'ryanoasis/vim-devicons'
-  use 'nvim-tree/nvim-web-devicons'
-  --use {'neoclide/coc.nvim', branch='release'}
-
-  use 'neovim/nvim-lspconfig'
-  use 'hrsh7th/nvim-cmp'
-  use 'hrsh7th/cmp-omni'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-nvim-lua'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-emoji'
-  use 'onsails/lspkind-nvim'
-
-  -- For vsnip users.
-  -- use 'hrsh7th/cmp-vsnip'
-  -- use 'hrsh7th/vim-vsnip'
-
-  use 'vim-scripts/todo-txt.vim'
-
-  use 'jdhao/better-escape.vim'
-  -- statusline
-  --use 'feline-nvim/feline.nvim'
-  -- use 'vim-airline/vim-airline'
-  --use 'vim-airline/vim-airline-themes'
-  use { 'nvim-lualine/lualine.nvim', requires = { 'nvim-tree/nvim-web-devicons', opt=true } }
-  use { 'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons' }
-  use 'jalvesaq/zotcite'
-  use 'jalvesaq/cmp-zotcite'
-
-  -- snippets
-  use 'L3MON4D3/LuaSnip'
-  use {
-   'nvim-telescope/telescope.nvim', tag = '0.1.1',
-  -- or                            , branch = '0.1.x',
-   requires = { {'nvim-lua/plenary.nvim'} }
-  }
-
-  use("mickael-menu/zk-nvim")
-  --use {
-  --  'iamcco/markdown-preview.nvim',
-  --  ft = 'markdown',
-  --  run = 'cd app && yarn install'
-  --}
-  use {'iamcco/markdown-preview.nvim'}
-  use {'junegunn/limelight.vim'}
-  use {'folke/twilight.nvim'}
-  use {'folke/zen-mode.nvim'}
-
-  use{'tpope/vim-fugitive'}
-  use{'vigoux/LanguageTool.nvim'}
-  use{'ledger/vim-ledger'}
-  use{'machakann/vim-swap'}
- end
-  
-)
-
+-- Load lazy nvim
+--
+--
+require("config.lazy")
 
 -- Color Scheme
   vim.g.nord_contrast = true
