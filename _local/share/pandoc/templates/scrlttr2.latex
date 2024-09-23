@@ -263,7 +263,6 @@ $if(firstfoot)$\setkomavar{firstfoot}{$firstfoot$}$endif$
 
 $for(include-before)$
 $include-before$
-
 $endfor$
 
 \opening{\usekomavar{opening}}
