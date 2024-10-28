@@ -109,7 +109,7 @@ smartresize() {
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
 export TEXMFHOME=~/.texmf
 export ZoteroSQLpath=/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite
-
+#export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
 export ZK_NOTEBOOK_DIR=/home/dino/notebook/
 export DENO_INSTALL="/home/$USER/.deno"
-export PATH="/home/dino/.local/bin:$DENO_INSTALL/bin:$PATH"
+export PATH="/home/dino/.local/bin:$PATH"

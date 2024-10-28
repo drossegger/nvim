@@ -252,8 +252,17 @@ vim.opt.completeopt={'menu','menuone','noselect'}
   })
 
   -- Set up lspconfig.
+--
   require('lspconfig')['texlab'].setup {
     capabilities = capabilities
+  }
+  require('lspconfig').ltex.setup{
+    settings= {
+      ltex = {
+        language="en-GB",
+      },
+      cmd = {"/home/dino/.local/ltex-ls-16.0.0/bin/ltex-ls"}
+    }
   }
 ---- LSP
 --local lspconfig = require'lspconfig'

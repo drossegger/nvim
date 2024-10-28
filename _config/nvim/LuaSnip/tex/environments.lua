@@ -76,6 +76,17 @@ local snippets = {
       }
       )
     ),
+  s({trig="def"},
+    fmta(
+      [[
+      \define{<>}
+      ]],
+      {
+        d(1,get_visual),
+      }
+      )
+    ),
+
   s({trig="nca"},
     fmta(
       [[
@@ -166,13 +177,22 @@ local snippets = {
 
 }
 
-local mathhighlight = { [ "mf" ]="mathfrak", [ "mbf" ]="mathbf", [ "mbb" ]="mathbb", [ "unl" ] = "underline", [ "ovl" ] = "overline" }
+local mathhighlight = { [ "mf" ]="mathfrak", [ "mbf" ]="mathbf", [ "mbb" ]="mathbb", [ "mrm" ]="mathrm", [ "unl" ] = "underline", [ "ovl" ] = "overline" }
 for short,long in pairs(mathhighlight) do 
   table.insert(snippets,
     s({ trig=short , snippetType="autosnippet" },
       {
         t("\\"..long.."{"),
         i(1),
+        t("}")
+      },
+      { condition = in_mathzone}
+      ))
+  table.insert(snippets,
+    s({ trig=long },
+      {
+        t("\\"..long.."{"),
+        d(1,get_visual),
         t("}")
       },
       { condition = in_mathzone}
