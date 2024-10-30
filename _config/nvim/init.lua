@@ -256,14 +256,29 @@ vim.opt.completeopt={'menu','menuone','noselect'}
   require('lspconfig')['texlab'].setup {
     capabilities = capabilities
   }
-  require('lspconfig').ltex.setup{
-    settings= {
-      ltex = {
-        language="en-GB",
+-- Spelling
+vim.opt.spellfile=vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+local words = {}
+for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):lines() do
+	table.insert(words, word)
+end
+require('lspconfig').ltex.setup{
+  settings= {
+    ltex={
+      filetypes= {'tex','bib', 'markdown'},
+      language='en-US',
+      dictionary={
+        ['en-US']=words,
       },
-      cmd = {"/home/dino/.local/ltex-ls-16.0.0/bin/ltex-ls"}
-    }
-  }
+    },
+  },
+}
+--      ltex = {
+--        language="en-GB",
+--      },
+--      cmd = {"/home/dino/.local/ltex-ls-16.0.0/bin/ltex-ls"}
+--    }
+--  }
 ---- LSP
 --local lspconfig = require'lspconfig'
 --local completion = require'completion'
@@ -335,7 +350,7 @@ local zenoptions= {
 vim.keymap.set('n','<Leader>zen',function() require("zen-mode").toggle(
 zenoptions ) end )
 
--- LanguageTool
---
 
-vim.g.languagetool_server_jar='/home/dino/apps/LanguageTool-6.3/languagetool-server.jar'
+
+
+

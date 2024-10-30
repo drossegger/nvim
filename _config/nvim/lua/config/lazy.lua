@@ -25,6 +25,7 @@ require("lazy").setup({
   -- 'neovim/nvim-lspconfig',
   'lervag/vimtex',
   'tpope/vim-surround',
+  'tpope/vim-fugitive',
   --'vim-pandoc/vim-pandoc-syntax',
   --'vim-pandoc/vim-pandoc',
   {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
@@ -46,7 +47,9 @@ require("lazy").setup({
   'nvim-tree/nvim-web-devicons',
   --use {'neoclide/coc.nvim', branch='release'}
 
-  'neovim/nvim-lspconfig',
+  { 'neovim/nvim-lspconfig',
+
+  },
   'hrsh7th/nvim-cmp',
   'hrsh7th/cmp-omni',
   'hrsh7th/cmp-buffer',
@@ -62,7 +65,11 @@ require("lazy").setup({
 
   'vim-scripts/todo-txt.vim',
 
-  'jdhao/better-escape.vim',
+  { 'max397574/better-escape.nvim',
+    config = function ()
+      require("better_escape").setup()
+    end,
+  },
   -- statusline
   --'feline-nvim/feline.nvim',
   -- 'vim-airline/vim-airline',
@@ -90,9 +97,6 @@ require("lazy").setup({
   'junegunn/limelight.vim',
   'folke/twilight.nvim',
   'folke/zen-mode.nvim',
-
-  'tpope/vim-fugitive',
-  'vigoux/LanguageTool.nvim',
   'ledger/vim-ledger',
   'machakann/vim-swap',
   {
