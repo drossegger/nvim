@@ -76,8 +76,8 @@ require("lazy").setup({
   --'vim-airline/vim-airline-themes',
   { 'nvim-lualine/lualine.nvim', dependencies = { 'nvim-tree/nvim-web-devicons', opt=true } },
   {'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons'},
-  'jalvesaq/zotcite',
-  'jalvesaq/cmp-zotcite',
+  --'jalvesaq/zotcite',
+  --'jalvesaq/cmp-zotcite',
 
   -- snippets
   'L3MON4D3/LuaSnip',
@@ -100,19 +100,56 @@ require("lazy").setup({
   'ledger/vim-ledger',
   'machakann/vim-swap',
   {
-  'Julian/lean.nvim',
-  event = { 'BufReadPre *.lean', 'BufNewFile *.lean' },
+   'Julian/lean.nvim',
+   event = { 'BufReadPre *.lean', 'BufNewFile *.lean' },
 
-  dependencies = {
-    'neovim/nvim-lspconfig',
-    'nvim-lua/plenary.nvim',
-    -- you also will likely want nvim-cmp or some completion engine
+   dependencies = {
+     'neovim/nvim-lspconfig',
+     'nvim-lua/plenary.nvim',
+     -- you also will likely want nvim-cmp or some completion engine
+   },
+
+   -- see details below for full configuration options
+   opts = {
+     lsp = {},
+     mappings = true,
+   }
   },
-
-  -- see details below for full configuration options
-  opts = {
-    lsp = {},
-    mappings = true,
+  {
+  "folke/trouble.nvim",
+  opts = {}, -- for default options, refer to the configuration section for custom setup.
+  cmd = "Trouble",
+  keys = {
+    {
+      "<leader>xx",
+      "<cmd>Trouble diagnostics toggle<cr>",
+      desc = "Diagnostics (Trouble)",
+    },
+    {
+      "<leader>xX",
+      "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+      desc = "Buffer Diagnostics (Trouble)",
+    },
+    {
+      "<leader>cs",
+      "<cmd>Trouble symbols toggle focus=false<cr>",
+      desc = "Symbols (Trouble)",
+    },
+    {
+      "<leader>cl",
+      "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+      desc = "LSP Definitions / references / ... (Trouble)",
+    },
+    {
+      "<leader>xL",
+      "<cmd>Trouble loclist toggle<cr>",
+      desc = "Location List (Trouble)",
+    },
+    {
+      "<leader>xQ",
+      "<cmd>Trouble qflist toggle<cr>",
+      desc = "Quickfix List (Trouble)",
+    },
   }
 }
 } 

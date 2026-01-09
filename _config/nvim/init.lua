@@ -102,7 +102,7 @@ end
 require('lualine').setup {
   options = {
     icons_enabled = true,
-    theme = 'auto',
+    theme = 'nord',
     component_separators = { left = '', right = ''},
     section_separators = { left = '', right = ''},
     disabled_filetypes = {
@@ -253,16 +253,16 @@ vim.opt.completeopt={'menu','menuone','noselect'}
 
   -- Set up lspconfig.
 --
-  require('lspconfig')['texlab'].setup {
+  vim.lsp.config('texlab',{
     capabilities = capabilities
-  }
+  })
 -- Spelling
 vim.opt.spellfile=vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
 local words = {}
 for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):lines() do
 	table.insert(words, word)
 end
-require('lspconfig').ltex.setup{
+vim.lsp.config('ltex',{
   settings= {
     ltex={
       filetypes= {'tex','bib', 'markdown'},
@@ -272,7 +272,8 @@ require('lspconfig').ltex.setup{
       },
     },
   },
-}
+})
+vim.lsp.enable({"texlab","ltex"})
 --      ltex = {
 --        language="en-GB",
 --      },
@@ -349,6 +350,14 @@ local zenoptions= {
 }
 vim.keymap.set('n','<Leader>zen',function() require("zen-mode").toggle(
 zenoptions ) end )
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] =
+    vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics,
+    {
+        virtual_text = true,
+    }
+)
 
 
 
