@@ -1,0 +1,3 @@
+#!/bin/bash
+
+todo.sh -t command add "${@:2}"
