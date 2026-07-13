@@ -10,7 +10,6 @@ vim.o.undodir = vim.fn.stdpath('config') .. '/undodir'
 vim.o.undofile = true
 vim.o.incsearch = true
 vim.o.hidden = true
-vim.o.completeopt='menuone,noinsert,noselect'
 vim.bo.autoindent = true
 vim.bo.smartindent = true
 vim.o.tabstop = 2
@@ -43,9 +42,6 @@ key_mapper('', '<left>', '<nop>')
 key_mapper('', '<right>', '<nop>')
 key_mapper('i','<C-t>','<Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab>')
 
--- Plugin Manager Packer
---
---
 local vim = vim
 local execute = vim.api.nvim_command
 local fn = vim.fn
@@ -66,6 +62,7 @@ vim.g.vimtex_quickfix_mode=0
 vim.g.vimtex_view_method='zathura'
 vim.g.vimtex_compiler_engine='lualatex'
 vim.g.vimtex_compiler_progname='nvr'
+vim.g.vimtex_complete_enabled= 0
 
 local function texstatus()
   local running=vim.b.vimtex.compiler.status
@@ -158,15 +155,27 @@ require('lualine').setup {
 require("bufferline").setup{ options= { separator_style="slant" } }
 -- LuaSnip
 --
-vim.cmd[[
-" Use Tab to expand and jump through snippets
-imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
-smap <silent><expr> <Tab> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Tab>'
+-- Optimized Tab mapping for Native LSP Completion + LuaSnip
+vim.keymap.set({ 'i', 's' }, '<Tab>', function()
+  if vim.fn.pumvisible() == 1 then
+    return '<C-n>' -- Navigate down the completion popup menu
+  elseif require('luasnip').expand_or_jumpable() then
+    return '<Plug>luasnip-expand-or-jump'
+  else
+    return '<Tab>'
+  end
+end, { expr = true, silent = true })
 
-" Use Shift-Tab to jump backwards through snippets
-imap <silent><expr> <S-Tab> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<S-Tab>'
-smap <silent><expr> <S-Tab> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<S-Tab>'
-]]
+vim.keymap.set({ 'i', 's' }, '<S-Tab>', function()
+  if vim.fn.pumvisible() == 1 then
+    return '<C-p>' -- Navigate up the completion popup menu
+  elseif require('luasnip').jumpable(-1) then
+    return '<Plug>luasnip-jump-prev'
+  else
+    return '<S-Tab>'
+  end
+end, { expr = true, silent = true })
+
 require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/LuaSnip/"})
 require("luasnip").config.set_config({ -- Setting LuaSnip config
 
@@ -181,88 +190,49 @@ require("luasnip").config.set_config({ -- Setting LuaSnip config
 
 -- Completion setup
 --
-vim.opt.completeopt={'menu','menuone','noselect'}
+vim.opt.completeopt = "menu,menuone,noselect,popup" -- Ensures the menu appears even for a single match and uses the native popup window.
+vim.o.autocomplete = true -- Enables the overall completion feature.
 
--- Set up nvim-cmp.
-  local cmp = require'cmp'
-  local lspkind=require'lspkind'
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp_completion", { clear = true }),
+  callback = function(args)
+    local client_id = args.data.client_id
+    if not client_id then
+      return
+    end
 
-  cmp.setup({
-    snippet = {
-      expand = function(args)
-        require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-      end,
-    },
-    window = {
-      completion = cmp.config.window.bordered(),
-      documentation = cmp.config.window.bordered(),
-    },
-    mapping = {
-      ['<C-j>'] = function(fallback)
-        if cmp.visible() then
-          cmp.select_next_item()
-        else
-         fallback()
-        end
-      end,
-      ['<C-k>'] = function(fallback)
-        if cmp.visible() then
-          cmp.select_prev_item()
-        else
-          fallback()
-        end
-      end,
-      ['<C-e>'] = cmp.mapping.abort(),
-      ['<C-l>'] = cmp.mapping.confirm({ select = true }),
-      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-      ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      ['<C-Space>'] = cmp.mapping.complete(),
-    },
-    sources = {
-      { name = 'nvim_lsp' },
-      { name = 'luasnip' }, -- For luasnip users.
-      { name = 'nvim_lua' }, 
-      { name = 'path' }, 
-      { name = 'omni' },
-      --{ name = 'buffer' },
-      { name = 'cmp_zotcite'},
-      { name = 'emoji', insert = true, },
-    }, 
-    completion = {
-      keyword_length = 1,
-      completeopt = "menu,noselect"
-    },
-    view = {
-      entries = 'custom',
-    },
-    formatting = {
-      format = lspkind.cmp_format({
-        mode = "symbol_text",
-        menu = ({
-          nvim_lsp = "[LSP]",
-          ultisnips = "[US]",
-          nvim_lua = "[Lua]",
-          path = "[Path]",
-          buffer = "[Buffer]",
-          emoji = "[Emoji]",
---  	      omni = "[Omni]",
-        }),
-      }),
-    },
-  })
+    local client = vim.lsp.get_client_by_id(client_id)
+    if client and client:supports_method("textDocument/completion") then
+      -- Enable native LSP completion for this client + buffer
+      vim.lsp.completion.enable(true, client_id, args.buf, {
+        autotrigger = true,   -- auto-show menu as you type (recommended)
+        -- You can also set { autotrigger = false } and trigger manually with <C-x><C-o>
+      })
+    end
+  end,
+})
 
-  -- Set up lspconfig.
---
-  vim.lsp.config('texlab',{
-    capabilities = capabilities
-  })
 -- Spelling
 vim.opt.spellfile=vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
 local words = {}
 for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):lines() do
 	table.insert(words, word)
 end
-vim.lsp.config('ltex',{
+-- LSP
+require('mason').setup()
+require('mason-tool-installer').setup({
+  ensure_installed = {
+    'stylua',
+    'prettier',
+    'ltex_plus',
+    'texlab',
+  },
+})
+require('mason-lspconfig').setup({
+  automatic_enable = true,
+})
+
+vim.lsp.config('ltex_plus',{
   settings= {
     ltex={
       filetypes= {'tex','bib', 'markdown'},
@@ -273,51 +243,29 @@ vim.lsp.config('ltex',{
     },
   },
 })
-vim.lsp.enable({"texlab","ltex"})
---      ltex = {
---        language="en-GB",
---      },
---      cmd = {"/home/dino/.local/ltex-ls-16.0.0/bin/ltex-ls"}
---    }
---  }
----- LSP
---local lspconfig = require'lspconfig'
---local completion = require'completion'
---local function custom_on_attach(client)
---  print('Attaching to ' .. client.name)
---  completion.on_attach(client)
---end
---local default_config = {
---  on_attach = custom_on_attach,
---}
----- setup language servers here
---lspconfig.tsserver.setup(default_config)
-
+vim.lsp.config('texlab',{
+  settings = {
+    texlab = {
+      -- We let Vimtex handle compilation, so we leave Texlab's builder blank
+      build = { executable = '', args = {} }, 
+      forwardSearch = { executable = '' },
+    },
+  },
+})
+--
 -- key_mapper('n','<Leader>n',':NERDTree<CR>')
 key_mapper('n','<Leader>t',':NERDTreeToggle<CR>')
 key_mapper('n','<Leader>f',':NERDTreeFind<CR>')
 key_mapper('n',']b',':BufferLineCycleNext<CR>')
 key_mapper('n','b]',':BufferLineCyclePrev<CR>')
 
--- Include COC config
---require 'include.coc'
+vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/cloud/Dokumente/todo/todo.txt',{})
 
--- require('markdown')
--- vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"},{
---   pattern = {"*.md"},
---   callback = create_keymaps,})
-
-vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/Dropbox/Dokumente/todo/todo.txt',{})
-
-vim.env.ZoteroSQLpath="/home/dino/Zotero/zotero.sqlite"
---vim.env.ZoteroSQLpath="/home/dino/Zotero/zotero.sqlite"
--- Statusbar
---require('feline_config')
 
 -- Treesitter
 require'nvim-treesitter.configs'.setup {
   highlight = {
-    enable = false,
+    enable = true,
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
@@ -328,10 +276,6 @@ require'nvim-treesitter.configs'.setup {
     enable = true
   }
 }
--- Zettelkasten
-
-require("zk").setup()
-
 -- Zen Mode
 --
 
@@ -350,16 +294,4 @@ local zenoptions= {
 }
 vim.keymap.set('n','<Leader>zen',function() require("zen-mode").toggle(
 zenoptions ) end )
-
-vim.lsp.handlers["textDocument/publishDiagnostics"] =
-    vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics,
-    {
-        virtual_text = true,
-    }
-)
-
-
-
-
 
