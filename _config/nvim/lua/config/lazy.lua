@@ -25,7 +25,7 @@ require("lazy").setup({
   'lervag/vimtex',
   'tpope/vim-surround',
   'tpope/vim-fugitive',
-  {'nvim-treesitter/nvim-treesitter', branch='main', build = ':TSUpdate'},
+  {'nvim-treesitter/nvim-treesitter', branch='main', lazy='false', build = ':TSUpdate'},
   {
     "mason-org/mason.nvim",
     opts = {}

@@ -113,3 +113,4 @@ export ZoteroSQLpath=/home/dino/snap/zotero-snap/common/Zotero/zotero.sqlite
 export ZK_NOTEBOOK_DIR=/home/dino/cloud/notebook/
 export DENO_INSTALL="/home/$USER/.deno"
 export PATH="/home/dino/.local/bin:$PATH"
+
