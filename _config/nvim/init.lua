@@ -1,298 +1,245 @@
--- Runtime path setup package.path=package.path .. ';/home/dino/.config/nvim/?.lua'
---
-vim.o.linebreak=true 
-vim.o.filetype='on'
-vim.o.syntax='on'
-vim.o.errorbells=false
-vim.o.smartcase=true
-vim.o.mouse='a'
-vim.o.undodir = vim.fn.stdpath('config') .. '/undodir'
-vim.o.undofile = true
-vim.o.incsearch = true
-vim.o.hidden = true
-vim.bo.autoindent = true
-vim.bo.smartindent = true
-vim.o.tabstop = 2
-vim.o.softtabstop = 2
-vim.o.shiftwidth = 2
-vim.o.expandtab = true
-vim.o.tw=0
-vim.wo.number = true
-vim.wo.relativenumber = false
-vim.wo.signcolumn = 'yes'
--- vim.wo.wrap = true
-vim.o.swapfile=false
-vim.g.mapleader=' '
-vim.g.maplocalleader="'"
-vim.g.loaded_perl_provider=0
-vim.g.loaded_ruby_provider=0
-vim.o.splitright=true
-local key_mapper = function(mode, key, result)
-  vim.api.nvim_set_keymap(
-    mode,
-    key,
-    result,
-    {noremap = true, silent = true}
-  )
-end
+-- ============================================================================
+-- Leader keys
+-- Must be set before loading lazy.nvim/plugin specifications.
+-- ============================================================================
 
-key_mapper('', '<up>', '<nop>')
-key_mapper('', '<down>', '<nop>')
-key_mapper('', '<left>', '<nop>')
-key_mapper('', '<right>', '<nop>')
-key_mapper('i','<C-t>','<Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab><Tab>')
+vim.g.mapleader = " "
+vim.g.maplocalleader = "'"
 
-local vim = vim
-local execute = vim.api.nvim_command
-local fn = vim.fn
+-- ============================================================================
+-- Basic Neovim behavior
+-- ============================================================================
 
--- Load lazy nvim
---
---
-require("config.lazy")
+vim.cmd("filetype plugin indent on")
+vim.cmd("syntax enable")
 
--- Color Scheme
-  vim.g.nord_contrast = true
-  vim.g.nord_border= true
-  require('nord').set()
--- Plugin config
-vim.g.vim_markdown_math = 1
--- vim.g.tex_flavor='latex'
-vim.g.vimtex_quickfix_mode=0
-vim.g.vimtex_view_method='zathura'
-vim.g.vimtex_compiler_engine='lualatex'
-vim.g.vimtex_compiler_progname='nvr'
-vim.g.vimtex_complete_enabled= 0
+vim.opt.termguicolors = true
 
-local function texstatus()
-  local running=vim.b.vimtex.compiler.status
-  --local running=vim.b.vimtex.compiler.is_running()
-  if running==1 then
-    return [[c]]
-  elseif running==2 then
-    return [[✓]]
-  elseif running==3 then
-    return [[✗]]
-  else 
-    return [[i]]
-  end
-end
+vim.opt.mouse = "a"
+vim.opt.hidden = true
 
-local function getWords()
-    -- the third string here is the string for visual-block mode (^V)
-    if vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == "" then
-        return vim.fn.wordcount().visual_words .. " w"
-    else
-        return vim.fn.wordcount().words .. " w"
-    end
-end
-local function getChars()
-    -- the third string here is the string for visual-block mode (^V)
-    if vim.fn.mode() == "v" or vim.fn.mode() == "V" or vim.fn.mode() == "" then
-        return vim.fn.wordcount().visual_chars .. " c"
-    else
-        return vim.fn.wordcount().chars.. " c"
-    end
-end
+vim.opt.smartcase = true
+vim.opt.incsearch = true
 
+vim.opt.errorbells = false
 
-require('lualine').setup {
-  options = {
-    icons_enabled = true,
-    theme = 'nord',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
-    disabled_filetypes = {
-      statusline = {},
-      winbar = {},
-    },
-    ignore_focus = {},
-    always_divide_middle = true,
-    globalstatus = false,
-    refresh = {
-      statusline = 1000,
-      tabline = 1000,
-      winbar = 1000,
-    }
-  },
-  sections = {
-    lualine_a = {'mode',
-                {
-                  texstatus, 
-                  cond = function() return (vim.bo.filetype=='tex') end,
-                  --color= function(section)
-                  --  if vim.b.vimtex ~= nil then
-                  --    if texstatus()==3 then
-                  --      return { bg="#bf616a" }
-                  --    elseif texstatus()==2 then
-                  --      return { bg="#a3be8c" }
-                  --    end
-                  --  else 
-                  --    return { bg="grey" }
-                  --  end
-                  --end
-                }, 'searchcount'
-                },
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location', { getChars }, { getWords } }
-    },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
-    lualine_y = {},
-    lualine_z = {}
-  },
-  tabline = {},
-  winbar = {},
-  inactive_winbar = {},
-}
+-- Line numbers / diagnostics
+vim.opt.number = true
+vim.opt.relativenumber = false
+vim.opt.signcolumn = "yes"
 
-require("bufferline").setup{ options= { separator_style="slant" } }
--- LuaSnip
---
--- Optimized Tab mapping for Native LSP Completion + LuaSnip
-vim.keymap.set({ 'i', 's' }, '<Tab>', function()
-  if vim.fn.pumvisible() == 1 then
-    return '<C-n>' -- Navigate down the completion popup menu
-  elseif require('luasnip').expand_or_jumpable() then
-    return '<Plug>luasnip-expand-or-jump'
-  else
-    return '<Tab>'
-  end
-end, { expr = true, silent = true })
+-- Default behavior for code files.
+-- Prose files such as TeX and Markdown override these settings below.
+vim.opt.wrap = false
+vim.opt.linebreak = false
+vim.opt.breakindent = false
 
-vim.keymap.set({ 'i', 's' }, '<S-Tab>', function()
-  if vim.fn.pumvisible() == 1 then
-    return '<C-p>' -- Navigate up the completion popup menu
-  elseif require('luasnip').jumpable(-1) then
-    return '<Plug>luasnip-jump-prev'
-  else
-    return '<S-Tab>'
-  end
-end, { expr = true, silent = true })
+-- Indentation defaults: appropriate for Lua, JavaScript, HTML, JSON, etc.
+vim.opt.autoindent = true
+vim.opt.smartindent = false
 
-require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/LuaSnip/"})
-require("luasnip").config.set_config({ -- Setting LuaSnip config
+vim.opt.expandtab = true
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
 
-  -- Enable autotriggered snippets
-  enable_autosnippets = true,
+-- Do not automatically insert hard line breaks.
+vim.opt.textwidth = 0
 
-  -- Use Tab (or some other key if you prefer) to trigger visual selection
-  store_selection_keys = "<Tab>",
-  update_events='TextChanged,TextChangedI',
+-- Splits
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
+-- Folds are enabled, but start open.
+-- This lets you selectively fold sections/environments when useful.
+vim.opt.foldenable = true
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+
+-- Do not permanently reserve a column for fold markers.
+-- Use "1" instead if you want to always see fold indicators.
+vim.opt.foldcolumn = "0"
+-- ============================================================================
+-- Persistent undo and swap files
+-- ============================================================================
+
+local undodir = vim.fn.stdpath("state") .. "/undo"
+vim.fn.mkdir(undodir, "p")
+
+vim.opt.undodir = undodir
+vim.opt.undofile = true
+
+-- Keeping swap files enabled provides useful crash recovery.
+-- Store them outside project directories.
+local swapdir = vim.fn.stdpath("state") .. "/swap"
+vim.fn.mkdir(swapdir, "p")
+
+vim.opt.swapfile = true
+vim.opt.directory = swapdir .. "//"
+
+-- If you strongly prefer to disable swap files entirely, use this instead:
+-- vim.opt.swapfile = false
+
+-- ============================================================================
+-- Disable unused language providers
+-- ============================================================================
+
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+-- ============================================================================
+-- General mappings
+-- ============================================================================
+
+-- Disable arrow keys in Normal, Visual, and Operator-pending mode.
+-- This does not disable them in Insert mode.
+vim.keymap.set({ "n", "v", "o" }, "<Up>", "<Nop>", {
+  silent = true,
+  desc = "Disable arrow key",
 })
 
+vim.keymap.set({ "n", "v", "o" }, "<Down>", "<Nop>", {
+  silent = true,
+  desc = "Disable arrow key",
+})
 
--- Completion setup
---
-vim.opt.completeopt = "menu,menuone,noselect,popup" -- Ensures the menu appears even for a single match and uses the native popup window.
-vim.o.autocomplete = true -- Enables the overall completion feature.
+vim.keymap.set({ "n", "v", "o" }, "<Left>", "<Nop>", {
+  silent = true,
+  desc = "Disable arrow key",
+})
 
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("lsp_completion", { clear = true }),
-  callback = function(args)
-    local client_id = args.data.client_id
-    if not client_id then
-      return
-    end
+vim.keymap.set({ "n", "v", "o" }, "<Right>", "<Nop>", {
+  silent = true,
+  desc = "Disable arrow key",
+})
 
-    local client = vim.lsp.get_client_by_id(client_id)
-    if client and client:supports_method("textDocument/completion") then
-      -- Enable native LSP completion for this client + buffer
-      vim.lsp.completion.enable(true, client_id, args.buf, {
-        autotrigger = true,   -- auto-show menu as you type (recommended)
-        -- You can also set { autotrigger = false } and trigger manually with <C-x><C-o>
-      })
+-- Do not restore the old <C-t> Insert-mode mapping that inserted ten tabs.
+-- Neovim's built-in <C-t> behavior indents the current line and is more useful.
+
+-- ============================================================================
+-- Filetype-specific settings
+-- ============================================================================
+
+local prose_group = vim.api.nvim_create_augroup("ProseOptions", {
+  clear = true,
+})
+
+-- Writing-oriented behavior for LaTeX, Markdown, and ordinary text.
+vim.api.nvim_create_autocmd("FileType", {
+  group = prose_group,
+  pattern = {
+    "tex",
+    "plaintex",
+    "bib",
+    "markdown",
+    "text",
+  },
+  callback = function()
+    -- Wrap visually, but do not insert hard line breaks into the file.
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+    vim.opt_local.breakindent = true
+    vim.opt_local.textwidth = 0
+
+    vim.opt_local.conceallevel = 2
+    vim.opt_local.concealcursor = "nc"
+    -- Neovim spelling; LTeX+ provides additional grammar/spelling diagnostics.
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = { "en_us" }
+    -- Do not automatically continue LaTeX comments, e.g.:
+    -- % comment
+    -- % cursor here after pressing Enter
+    vim.opt_local.formatoptions:remove({ "c", "r", "o" })
+  end,
+})
+
+local indent_group = vim.api.nvim_create_augroup("FiletypeIndentation", {
+  clear = true,
+})
+
+-- Python conventionally uses four spaces.
+vim.api.nvim_create_autocmd("FileType", {
+  group = indent_group,
+  pattern = "python",
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.tabstop = 4
+    vim.opt_local.softtabstop = 4
+    vim.opt_local.shiftwidth = 4
+  end,
+})
+
+-- Explicit two-space settings for your other common programming languages.
+vim.api.nvim_create_autocmd("FileType", {
+  group = indent_group,
+  pattern = {
+    "lua",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "css",
+    "json",
+    "yaml",
+  },
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.tabstop = 2
+    vim.opt_local.softtabstop = 2
+    vim.opt_local.shiftwidth = 2
+  end,
+})
+
+-- Makefiles require literal tab characters.
+vim.api.nvim_create_autocmd("FileType", {
+  group = indent_group,
+  pattern = "make",
+  callback = function()
+    vim.opt_local.expandtab = false
+  end,
+})
+
+-- ============================================================================
+-- Personal commands
+-- ============================================================================
+
+local todo_file = vim.fn.expand("~/cloud/Dokumente/todo/todo.txt")
+
+vim.api.nvim_create_user_command("Todo", function()
+  vim.cmd("80vsplit " .. vim.fn.fnameescape(todo_file))
+end, {
+  desc = "Open todo file in a vertical split",
+})
+
+-- ============================================================================
+-- Fold remembering
+-- ============================================================================
+local view_group = vim.api.nvim_create_augroup("RememberViews", {
+  clear = true,
+})
+
+vim.api.nvim_create_autocmd("BufWinLeave", {
+  group = view_group,
+  pattern = { "*.tex", "*.bib", "*.md", "*.markdown" },
+  callback = function()
+    if vim.bo.buftype == "" then
+      vim.cmd("silent! mkview")
     end
   end,
 })
 
--- Spelling
-vim.opt.spellfile=vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
-local words = {}
-for word in io.open(vim.fn.stdpath("config") .. "/spell/en.utf-8.add", "r"):lines() do
-	table.insert(words, word)
-end
--- LSP
-require('mason').setup()
-require('mason-tool-installer').setup({
-  ensure_installed = {
-    'stylua',
-    'prettier',
-    'ltex_plus',
-    'texlab',
-  },
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = view_group,
+  pattern = { "*.tex", "*.bib", "*.md", "*.markdown" },
+  callback = function()
+    if vim.bo.buftype == "" then
+      vim.cmd("silent! loadview")
+    end
+  end,
 })
-require('mason-lspconfig').setup({
-  automatic_enable = true,
-})
+-- ============================================================================
+-- Plugin loading
+-- ============================================================================
 
-vim.lsp.config('ltex_plus',{
-  settings= {
-    ltex={
-      filetypes= {'tex','bib', 'markdown'},
-      language='en-US',
-      dictionary={
-        ['en-US']=words,
-      },
-    },
-  },
-})
-vim.lsp.config('texlab',{
-  settings = {
-    texlab = {
-      -- We let Vimtex handle compilation, so we leave Texlab's builder blank
-      build = { executable = '', args = {} }, 
-      forwardSearch = { executable = '' },
-    },
-  },
-})
---
--- key_mapper('n','<Leader>n',':NERDTree<CR>')
-key_mapper('n','<Leader>t',':NERDTreeToggle<CR>')
-key_mapper('n','<Leader>f',':NERDTreeFind<CR>')
-key_mapper('n',']b',':BufferLineCycleNext<CR>')
-key_mapper('n','b]',':BufferLineCyclePrev<CR>')
-
-vim.api.nvim_create_user_command('Todo', '80vsplit /home/dino/cloud/Dokumente/todo/todo.txt',{})
-
-
--- Treesitter
-require 'nvim-treesitter.config'.setup {
-  highlight = {
-    enable = true,
-    disable= {'latex',},
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    -- additional_vim_regex_highlighting = false,
-  },
-  indent = {
-    enable = true
-  }
-}
--- Zen Mode
---
-
-local zenoptions= {
-  plugins = {
-    alacritty = {
-     enabled = true,
-     font = '18' 
-   },
-  },
-  window = {
-    options = {
-      number = false
-    }
-  }
-}
-vim.keymap.set('n','<Leader>zen',function() require("zen-mode").toggle(
-zenoptions ) end )
-
+require("config.lazy")
